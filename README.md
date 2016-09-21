@@ -1,10 +1,18 @@
 # statsd-exec
 `statsd-exec` is small shell command "wrapper" to run any arbitrary command and report execution time, success and failure information to [statsd](https://github.com/etsy/statsd).
 
+> Note: Tested only on Linux and Mac. If you test on any other platform, please me know!
+
 ## Usage
 ```shell
 statsd-exec <Add command or script here>
 ```
+
+## Installation
+- Download binary from [releases](https://github.com/ernoaapa/statsd-exec/releases)
+- Give execution rights (`chmod +x statsd-exec`) and add it into your $PATH
+- Add `STATSD_PREFIX="my.prefix" statsd-exec` in front of any command
+- See below more examples!
 
 ### Configuration
 Configuration happens through environment variables
