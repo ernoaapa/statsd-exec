@@ -19,7 +19,8 @@ Configuration happens through environment variables
 
 | Environment variable | Required | Default   | Description                |
 |----------------------|----------|-----------|----------------------------|
-| STATSD_PREFIX        | true     | -         | Prefix for all stats       |
+| STATSD_METRIC_NAME   | true     | -         | Name of the metric         |
+| STATSD_PREFIX        | false    | stats     | Prefix for all stats       |
 | STATSD_HOST          | false    | localhost | Hostname for Statsd client |
 | STATSD_PORT          | false    | 8125      | Port for Statsd client     |
 
@@ -27,27 +28,38 @@ Configuration happens through environment variables
 #### Successful execution
 If command returns successfully (exit code 0)
 ```
-STATSD_PREFIX="process.helloworld" statsd-exec echo "Hello World"
+STATSD_METRIC_NAME="process.helloworld" statsd-exec echo "Hello World"
 ```
 
 This would send following metrics:
-- `process.helloworld.executed:1|c`
-- `process.helloworld.duration:8.167651|ms`
-- `process.helloworld.success:1|c`
-- `process.helloworld.failed:0|c`
+- `stats.process.helloworld.executed:1|c`
+- `stats.process.helloworld.duration:8.167651|ms`
+- `stats.process.helloworld.success:1|c`
+- `stats.process.helloworld.failed:0|c`
 
 #### Failure execution
 If command returns failure
 ```
-STATSD_PREFIX="process.helloworld" statsd-exec test "foo" == "bar"
+STATSD_METRIC_NAME="process.helloworld" statsd-exec test "foo" == "bar"
 ```
 
 This would send following metrics:
-- `process.helloworld.executed:1|c`
-- `process.helloworld.duration:6.332267|ms`
-- `process.helloworld.success:0|c`
-- `process.helloworld.failed:1|c`
+- `stats.process.helloworld.executed:1|c`
+- `stats.process.helloworld.duration:6.332267|ms`
+- `stats.process.helloworld.success:0|c`
+- `stats.process.helloworld.failed:1|c`
 
+#### Custom prefix
+You can for instance set global prefix for all metrics and define only metric name for each execution
+```
+export STATSD_PREFIX="stats.testing"
+STATSD_METRIC_NAME="foo" statsd-exec echo "Hello Foo"
+STATSD_METRIC_NAME="bar" statsd-exec echo "Hello Bar"
+```
+
+This would send following metrics:
+- `stats.testing.foo.*`
+- `stats.testing.bar.*`
 
 ## Development
 ### Get dependencies

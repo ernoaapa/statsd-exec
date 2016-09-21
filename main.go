@@ -14,9 +14,10 @@ import (
 
 // StatsdConfig for statsd client
 type StatsdConfig struct {
-	Host   string `default:"localhost"`
-	Port   int    `default:"8125"`
-	Prefix string `required:"true"`
+	Host       string `default:"localhost"`
+	Port       int    `default:"8125"`
+	Prefix     string `default:"stats"`
+	MetricName string `envconfig:"metric_name",required:"true"`
 }
 
 func main() {
@@ -45,7 +46,9 @@ func getConfig() *StatsdConfig {
 }
 
 func getClient(config *StatsdConfig) statsd.Statter {
-	client, err := statsd.NewClient(fmt.Sprintf("%s:%d", config.Host, config.Port), config.Prefix)
+	address := fmt.Sprintf("%s:%d", config.Host, config.Port)
+	fullPrefix := fmt.Sprintf("%s.%s", config.Prefix, config.MetricName)
+	client, err := statsd.NewClient(address, fullPrefix)
 	if err != nil {
 		log.Fatal(err)
 	}
